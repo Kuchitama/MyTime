@@ -1,0 +1,18 @@
+# This is the Database configuration file for the application.
+# ~~~~~
+
+# Database configuration
+# ~~~~~
+# You can declare as many datasources as you want.
+# By convention, the default datasource is named `default`
+#
+db.default.driver=org.postgresql.Driver
+db.default.url="DB_URL"
+db.default.user=USER_NAME
+db.default.password="YOUR_PASSWORD"
+
+# Evolutions
+# ~~~~~
+# You can disable evolutions if needed
+evolutionplugin=disabled
+
