@@ -8,7 +8,7 @@
 #
 db.default.driver=org.postgresql.Driver
 db.default.url="DB_URL"
-db.default.user=USER_NAME
+db.default.user="USER_NAME"
 db.default.password="YOUR_PASSWORD"
 
 # Evolutions
