@@ -4,11 +4,15 @@ import play.api._
 import play.api.mvc._
 import scalikejdbc._
 import java.sql.DriverManager
+import utils.Loggable
 
-object Application extends Controller {
+object Application extends Controller with Loggable {
   private lazy val conf = play.api.Play.current.configuration
 
   def index = Action {
+
+    logger.debug(s"called Application#index")
+
     Class.forName("org.postgresql.Driver")
     val url = conf.getString("db.default.url")
     val user = conf.getString("db.default.user")
