@@ -2,4 +2,7 @@ language: scala
 scala:
   - 2.10.2
 
-script: "sbt coveralls"
+script:
+  - "sbt compile"
+  - "sbt test"
+  - "sbt coveralls"
