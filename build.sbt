@@ -14,8 +14,9 @@ libraryDependencies ++= Seq(
   cache,
   "com.github.seratch" %% "scalikejdbc"             % "[1.6,)",
   "com.github.seratch" % "scalikejdbc-play-plugin_2.10" % "[1.6,)",
-  "postgresql" % "postgresql" % "9.1-901-1.jdbc4"
-)     
+  "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
+  "com.github.tototoshi" %% "play-flyway" % "0.2.0"
+)
 
 play.Project.playScalaSettings
 
