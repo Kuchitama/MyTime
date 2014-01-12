@@ -3,17 +3,19 @@ package controllers
 import mvc.AppAction
 import utils.Loggable
 import play.api.mvc._
-import play.api.Logger
+import models.User
 
 object Application extends Controller with Loggable {
 
   def index = AppAction {
     implicit request =>
-      implicit db =>
+      implicit session =>
 
-    logger.info("called Application#index")
+    User.add("foobar")
 
-    Ok(views.html.index("MyTime is ready."))
+    val users = User.findAll()
+
+    Ok(views.html.index(users))
   }
 
 }

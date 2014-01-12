@@ -1,7 +1,7 @@
-@(message: String)
+@(users: List[models.User])
 
 @main("Welcome to Play") {
-
-    @play20.welcome(message)
-
+  @for(u <- users) {
+    <div>@u.userIdentifier</div>
+  }
 }

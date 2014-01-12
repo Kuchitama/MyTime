@@ -1,5 +1,5 @@
 create table users (
-  id    bigint  primary key,
+  id    SERIAL  primary key,
   user_identifier   varchar(100),
   created_time  timestamp,
   updated_time  timestamp
