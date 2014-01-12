@@ -34,14 +34,16 @@ object User extends SQLSyntaxSupport[User] {
     select.from(User as u)
   }.map(User(u)).list.apply()
 
+  def findById(id: Long)(implicit s: DBSession): Option[User] = withSQL {
+    select.from(User as u).where.eq(u.id, id)
+  }.map(User(u)).headOption().apply()
+
   def add(identifier: String)(implicit s: DBSession): User = {
     val now = new Date()
     val id = withSQL {
       insert.into(User).namedValues(column.userIdentifier -> identifier, column.createdTime -> now, column.updatedTime -> now)
     }.updateAndReturnGeneratedKey.apply()
 
-    withSQL {
-      select.from(User as u).where.eq(u.id, id)
-    }.map(User(u)).list.apply().head
+    findById(id).get
   }
 }

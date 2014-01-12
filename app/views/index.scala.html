@@ -1,7 +1,13 @@
-@(users: List[models.User])
+@(users: List[models.User], tasks: List[models.Task])
 
 @main("Welcome to Play") {
+  <h1>Users</h1>
   @for(u <- users) {
     <div>@u.userIdentifier</div>
+  }
+
+  <h1>Tasks</h1>
+  @for(t <- tasks) {
+    <div>@t.name</div>
   }
 }

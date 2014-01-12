@@ -3,7 +3,7 @@ package controllers
 import mvc.AppAction
 import utils.Loggable
 import play.api.mvc._
-import models.User
+import models.{Task, User}
 
 object Application extends Controller with Loggable {
 
@@ -11,11 +11,10 @@ object Application extends Controller with Loggable {
     implicit request =>
       implicit session =>
 
-    User.add("foobar")
-
     val users = User.findAll()
+      val tasks = Task.findAll()
 
-    Ok(views.html.index(users))
+    Ok(views.html.index(users, tasks))
   }
 
 }
