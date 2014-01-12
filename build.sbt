@@ -12,8 +12,9 @@ libraryDependencies ++= Seq(
   jdbc,
   anorm,
   cache,
-  "com.github.seratch" %% "scalikejdbc"             % "[1.6,)",
-  "com.github.seratch" % "scalikejdbc-play-plugin_2.10" % "[1.6,)",
+  "org.scalikejdbc" %% "scalikejdbc"             % "[1.7,)",
+  "org.scalikejdbc" %% "scalikejdbc-interpolation" % "[1.7,)",
+  "org.scalikejdbc" % "scalikejdbc-play-plugin_2.10" % "[1.7,)",
   "postgresql" % "postgresql" % "9.1-901-1.jdbc4",
   "com.github.tototoshi" %% "play-flyway" % "1.0.0"
 )
