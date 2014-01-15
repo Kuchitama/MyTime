@@ -1,0 +1,4 @@
+twitter.consumer.key={YOUR_CONSUMER_KEY}
+twitter.consumer.secret={YOUR_CONSUMER_SECRET}
+
+twitter.request.timeout=10s
