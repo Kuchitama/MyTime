@@ -11,19 +11,22 @@ import scala.Some
 import scala.concurrent.{Await, ExecutionContext}
 import models.User
 import scala.concurrent.duration.{Duration, MILLISECONDS}
-import mvc.AppAction
+import mvc.{NoAuthenticateAction, AppAction}
 import scalikejdbc.DBSession
+import org.apache.commons.lang3.time.DateUtils
+import java.util.Date
+import utils.AppConfig
 
 /**
  * Created by k2 on 2014/01/13.
  */
 object TwitterController extends Controller {
-  private lazy val conf = play.api.Play.current.configuration
-
+  private val conf = AppConfig()
   private val Key = {
-    for(consumerKey <- conf.getString("twitter.consumer.key");
-        consumerSecret <- conf.getString("twitter.consumer.secret")) yield ConsumerKey(consumerKey, consumerSecret)
-  }.getOrElse(throw new IllegalStateException("Undefined twitter settings."))
+    val consumerKey = conf.get("twitter.consumer.key")
+    val consumerSecret = conf.get("twitter.consumer.secret")
+    ConsumerKey(consumerKey, consumerSecret)
+  }
 
   private val Twitter = OAuth(ServiceInfo(
     "https://api.twitter.com/oauth/request_token",
@@ -32,12 +35,14 @@ object TwitterController extends Controller {
     true)
 
   /** Twitterサーバとの通信タイムアウト時間 */
-  private lazy val Timeout: Duration = {
-    val TimeoutMillis = conf.getMilliseconds("twitter.request.timeout").getOrElse(throw new IllegalStateException("Undefined twitter settings"))
+  private lazy val TwitterRequestTimeout: Duration = {
+    val TimeoutMillis = conf.get("twitter.request.timeout", _.getMilliseconds)
     Duration(TimeoutMillis, MILLISECONDS)
   }
 
-  def authenticate = AppAction { implicit request =>
+  private lazy val SessionTimeout: Int = conf.get("mytime.session.timeout", _.getMilliseconds).toInt
+
+  def authenticate = NoAuthenticateAction { implicit request =>
       implicit session =>
     request.getQueryString("oauth_verifier").map { verifier =>
       val tokenPair = buildOAuthRequestToken(request).get
@@ -46,7 +51,10 @@ object TwitterController extends Controller {
         case Right(t) =>
           // We received the authorized tokens in the OAuth object - store it before we proceed
           registerUser(t) match {
-            case Some(user) => Redirect(routes.Application.index).withSession("user_id" -> s"${user.id}")
+            case Some(user) =>{
+              val expireTime = DateUtils.addMilliseconds(new Date(), SessionTimeout)
+              Redirect(routes.Application.index).withSession("user_id" -> s"${user.id}", "expire_at" -> s"${expireTime.getTime}")
+            }
             case _ => throw new Exception(s"can't login by twitter")
           }
         case Left(e) => throw e
@@ -83,7 +91,7 @@ object TwitterController extends Controller {
         Some(User.add(idStr, screenName))
       }
     }
-    Await.result(future, Timeout)
+    Await.result(future, TwitterRequestTimeout)
   }
 
   private def buildOAuthRequestToken(implicit request: RequestHeader): Option[RequestToken] = {

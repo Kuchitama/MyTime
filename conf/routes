@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /login                      controllers.Application.login
 
 # Twitter
 GET     /twitter/authenticate       controllers.TwitterController.authenticate

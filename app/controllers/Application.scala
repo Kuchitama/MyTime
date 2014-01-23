@@ -17,4 +17,9 @@ object Application extends Controller with Loggable {
     Ok(views.html.index(users, tasks))
   }
 
+  def login = Action {
+    implicit request =>
+
+    Ok(views.html.login())
+  }
 }
