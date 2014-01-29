@@ -11,7 +11,7 @@ case class Task(id: Long,
   priority: Int,
   isDone: Boolean,
   time: Long,
-  limitDate: Date,
+  limitDate: Option[Date],
   createdTime: Date,
   updatedTime: Date) {
 
@@ -32,16 +32,16 @@ object Task extends SQLSyntaxSupport[Task] {
     "updated_time")
 
   def apply(syntax: SyntaxProvider[Task])(rs: WrappedResultSet) = {
-    val u = syntax.resultName
-    new Task(id = rs.long(u.id),
-      userId = rs.long(u.userId),
-      name = rs.string(u.name),
-      priority=rs.int(u.priority),
-      isDone = rs.boolean(u.isDone),
-      time = rs.long(u.time),
-      limitDate = rs.date(u.limitDate),
-      createdTime = rs.date(u.createdTime),
-      updatedTime = rs.date(u.updatedTime))
+    val t = syntax.resultName
+    new Task(id = rs.long(t.id),
+      userId = rs.long(t.userId),
+      name = rs.string(t.name),
+      priority=rs.int(t.priority),
+      isDone = rs.boolean(t.isDone),
+      time = rs.long(t.time),
+      limitDate = rs.dateOpt(t.limitDate),
+      createdTime = rs.date(t.createdTime),
+      updatedTime = rs.date(t.updatedTime))
   }
 
   private lazy val m = Task.syntax("m")
@@ -50,6 +50,15 @@ object Task extends SQLSyntaxSupport[Task] {
     select.from(Task as m)
   }.map(Task(m)).list.apply()
 
-  // TODO
-  def add(identifier: String)(implicit s: DBSession): Task = ???
+  def findById(id: Long)(implicit s: DBSession): Option[Task] = withSQL {
+   select.from(Task as m).where.eq(m.id, id)
+  }.map(Task(m)).headOption().apply()
+
+  def add(newTask: Task)(implicit s: DBSession): Task = {
+    val now = new Date()
+    val id = withSQL {
+      insert.into(Task).namedValues(column.userId -> newTask.userId, column.name -> newTask.name, column.priority -> newTask.priority, column.isDone -> newTask.isDone, column.time -> newTask.time, column.limitDate -> newTask.limitDate, column.createdTime -> now, column.updatedTime -> now)
+    }.updateAndReturnGeneratedKey().apply()
+    findById(id).get
+  }
 }

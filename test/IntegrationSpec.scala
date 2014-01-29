@@ -1,3 +1,4 @@
+import org.specs2.execute.Pending
 import org.specs2.mutable._
 import org.specs2.runner._
 import org.junit.runner._
@@ -12,13 +13,26 @@ import play.api.test.Helpers._
 @RunWith(classOf[JUnitRunner])
 class IntegrationSpec extends Specification {
 
-  "Application" should {
+  "TaskForm" should {
 
-    "work from within a browser" in new WithBrowser {
+    "return only content with onlyContent=true" in {
+      "by GET" in new WithBrowser {
+        Pending("to research test with session.")
 
-      browser.goTo("http://localhost:" + port)
+        /*
+        browser.goTo("http://localhost:" + port + "/task/form?onlyContent=true")
 
-      browser.pageSource must contain("MyTime is ready.")
+        browser.pageSource must not contain("<html>")
+        browser.pageSource must not contain("<head>")
+        browser.pageSource must not contain("</head>")
+        browser.pageSource must not contain("<body>")
+        browser.pageSource must not contain("</body>")
+        browser.pageSource must not contain("</html>")
+
+        browser.pageSource must contain("<form>")
+        browser.pageSource must contain("</form>")
+        */
+      }
     }
   }
 }
